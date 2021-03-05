@@ -20,6 +20,8 @@ namespace Guanomancer.EzRsa
 
             _aes = Aes.Create();
             _aes.Mode = CipherMode.CBC;
+            if (!_aes.ValidKeySize(aesKeyBitSize))
+                throw new ArgumentOutOfRangeException("aesKeyBitSize", "Invalid key size.");
             _aes.KeySize = aesKeyBitSize;
             _aes.BlockSize = blockSize;
             _aes.GenerateKey();
