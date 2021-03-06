@@ -42,7 +42,6 @@ namespace Guanomancer.EzRsa
             {
                 EncryptedAesKey = RsaEncrypt(_aes.Key),
                 EncryptedAesIV = RsaEncrypt(_aes.IV),
-                PublicRsaKey = _rsa.ExportRSAPublicKey(),
             };
         }
 
@@ -50,11 +49,10 @@ namespace Guanomancer.EzRsa
         {
             try
             {
-                _aes.Key = info.EncryptedAesKey;
-                _aes.IV = info.EncryptedAesIV;
-                _rsa.ImportRSAPublicKey(info.PublicRsaKey, out int _);
+                _aes.Key = RsaDecrypt(info.EncryptedAesKey);
+                _aes.IV = RsaDecrypt(info.EncryptedAesIV);
             }
-            catch { return false; }
+            catch(Exception ex) { return false; }
             return true;
         }
 
