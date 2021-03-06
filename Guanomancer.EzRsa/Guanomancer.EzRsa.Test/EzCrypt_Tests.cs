@@ -14,7 +14,7 @@ namespace Guanomancer.EzRsa.Test
             var crypt = new EzCrypt();
             var str = "This is a test.";
 
-            var buffer = crypt.Encrypt(str);
+            var buffer = crypt.AesEncryptString(str);
 
             Assert.IsNotNull(buffer);
             Assert.AreNotEqual(0, buffer.Length);
@@ -25,9 +25,9 @@ namespace Guanomancer.EzRsa.Test
         {
             var crypt = new EzCrypt();
             var str = "This is a test.";
-            var buffer = crypt.Encrypt(str);
+            var buffer = crypt.AesEncryptString(str);
 
-            var result = crypt.DecryptToString(buffer);
+            var result = crypt.AesDecryptString(buffer);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(str, result);

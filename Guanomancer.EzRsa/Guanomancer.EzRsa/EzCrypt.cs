@@ -30,9 +30,45 @@ namespace Guanomancer.EzRsa
             _rsa = new RSACryptoServiceProvider(rsaKeyBitSize);
         }
 
-        public byte[] Encrypt(string inputString) => Encrypt(Encoding.UTF8.GetBytes(inputString));
+        public Encoding Encoding { get; set; } = Encoding.UTF32;
 
-        public byte[] Encrypt(byte[] inputBuffer)
+        public byte[] GetPublicRsaKey() => _rsa.ExportRSAPublicKey();
+
+        public void SetPublicRsaKey(byte[] key) => _rsa.ImportRSAPublicKey(key, out int _);
+
+        public CryptInfo GetInfo()
+        {
+            return new CryptInfo
+            {
+                EncryptedAesKey = RsaEncrypt(_aes.Key),
+                EncryptedAesIV = RsaEncrypt(_aes.IV),
+                PublicRsaKey = _rsa.ExportRSAPublicKey(),
+            };
+        }
+
+        public bool SetInfo(CryptInfo info)
+        {
+            try
+            {
+                _aes.Key = info.EncryptedAesKey;
+                _aes.IV = info.EncryptedAesIV;
+                _rsa.ImportRSAPublicKey(info.PublicRsaKey, out int _);
+            }
+            catch { return false; }
+            return true;
+        }
+
+        public byte[] RsaEncryptString(string inputString) => RsaEncrypt(Encoding.GetBytes(inputString));
+
+        public byte[] RsaEncrypt(byte[] inputBuffer) => _rsa.Encrypt(inputBuffer, RSAEncryptionPadding.OaepSHA1);
+
+        public string RsaDecryptString(byte[] inputBuffer) => Encoding.GetString(RsaDecrypt(inputBuffer));
+
+        public byte[] RsaDecrypt(byte[] inputBuffer) => _rsa.Decrypt(inputBuffer, RSAEncryptionPadding.OaepSHA1);
+
+        public byte[] AesEncryptString(string inputString) => AesEncrypt(Encoding.GetBytes(inputString));
+
+        public byte[] AesEncrypt(byte[] inputBuffer)
         {
             using (var encryptor = _aes.CreateEncryptor())
             {
@@ -47,9 +83,9 @@ namespace Guanomancer.EzRsa
             }
         }
         
-        public string DecryptToString(byte[] inputBuffer) => Encoding.UTF8.GetString(Decrypt(inputBuffer));
+        public string AesDecryptString(byte[] inputBuffer) => Encoding.GetString(AesDecrypt(inputBuffer));
 
-        public byte[] Decrypt(byte[] inputBuffer)
+        public byte[] AesDecrypt(byte[] inputBuffer)
         {
             using (var decryptor = _aes.CreateDecryptor())
             {
