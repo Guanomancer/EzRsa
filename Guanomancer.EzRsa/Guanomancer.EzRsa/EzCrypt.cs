@@ -49,10 +49,15 @@ namespace Guanomancer.EzRsa
         {
             try
             {
+<<<<<<< HEAD
                 _aes.Key = info.EncryptedAesKey;
                 _aes.IV = info.EncryptedAesIV;
+=======
+                _aes.Key = RsaDecrypt(info.EncryptedAesKey);
+                _aes.IV = RsaDecrypt(info.EncryptedAesIV);
+>>>>>>> 671f7e1415490d77a132f3011653ccd38ac78311
             }
-            catch { return false; }
+            catch(Exception ex) { return false; }
             return true;
         }
 
