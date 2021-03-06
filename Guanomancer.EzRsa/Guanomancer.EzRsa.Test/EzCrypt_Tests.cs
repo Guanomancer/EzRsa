@@ -32,5 +32,24 @@ namespace Guanomancer.EzRsa.Test
             Assert.IsNotNull(result);
             Assert.AreEqual(str, result);
         }
+
+        [Test]
+        public void SetPublicRsaKey_TransfereWorks()
+        {
+            var sender = new EzCrypt();
+            var receiver = new EzCrypt();
+            var str = "This is a test.";
+
+            var key = sender.GetPublicRsaKey();
+            receiver.SetPublicRsaKey(key);
+            var info = receiver.GetInfo();
+            var infoSet = sender.SetInfo(info);
+
+            Assert.IsTrue(infoSet);
+
+            var result = receiver.AesDecryptString(sender.AesEncryptString(str));
+
+            Assert.AreEqual(str, result);
+        }
     }
 }

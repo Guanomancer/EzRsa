@@ -8,6 +8,5 @@ namespace Guanomancer.EzRsa
     {
         public byte[] EncryptedAesKey;
         public byte[] EncryptedAesIV;
-        public byte[] PublicRsaKey;
     }
 }
